@@ -18,8 +18,8 @@ driver.get(login_url)
 time.sleep(2)
 
 cur = datetime.datetime.now()
-cur_date = cur.strftime("현재 시간 %y년 %m월 %d일 %h시 %m분 입니다.\n")
-img_date = cur.strftime("%y%m%d%h%m")
+cur_date = cur.strftime("현재 시간 %y년 %m월 %d일 %H시 %m분 입니다.\n")
+img_date = cur.strftime("%y%m%d%H%m")
 print(cur_date)
 
 def login(): # 다음카페 로그인
@@ -35,17 +35,17 @@ def login(): # 다음카페 로그인
     driver.find_element_by_css_selector("div.wrap_btn > button.btn_g.btn_confirm.submit").click()
 
 def loading(): # url의 사진들을 로딩
-    print("로그인 되었습니다")
     cafe_url = input("사진을 다운받을 카페 주소를 입력하세요 : ")
-    name = input("사진 파일에 들어갈 이름을 영어로 입력하세요 : ")
+    print("카페 로딩중입니다. 잠시만 기다려주세요.")
     driver.get(cafe_url)
+
+    name = input("사진 파일에 들어갈 이름을 영어로 입력하세요 : ")
 
     return name
 
 def main(): # 메인함수
     name = loading()
 
-    print("카페 로딩중입니다. 잠시만 기다려주세요.")
     # https://stackoverflow.com/questions/60182107/nosuchframeexceptionframe-reference-in-selenium
     wait = WebDriverWait(driver, 3)
     wait.until(ec.frame_to_be_available_and_switch_to_it("down"))
@@ -71,8 +71,13 @@ def main(): # 메인함수
 
     print("다운로드 완료")
 
-    driver.close()
-
 if __name__ == "__main__":
     login()
-    main()
+    print("로그인 되었습니다")
+    while True:
+        main()
+        a = int(input("종료하고 싶다면 0을 누르세요 : "))
+        if a == 0:
+            break
+
+    driver.close()
